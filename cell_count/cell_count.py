@@ -50,20 +50,17 @@ def filter_small_blobs(cell_index, size_threshold):
 
     return cell_index
 
-# extract background by dilation
+# extract background by dilation. dilate with ring to augment cell body shape
 def bg_extract(img):
-    struct = np.zeros((5, 5), dtype=np.uint8)
-    struct[:, 0:4] = 1
-    struct[0:4, :] = 1
-    bg_img = cv2.dilate(img, struct, iterations=3)
-
+    struct = np.oness((5, 5), dtype=np.uint8)
+    struct[1:3, 1:3] = 0;
     return bg_img
 
 # foreground extraction by distance transform thresholding
 def fg_extract(img):
     # Distance transform. Output 32-bit float image.
     dist_transform = cv2.distanceTransform(img, cv2.cv.CV_DIST_L1, maskSize=5)
-    ostuval, fg = cv2.threshold(dist_transform, 0.6 * dist_transform.max(), 255, cv2.THRESH_BINARY)
+    ostuval, fg = cv2.threshold(dist_transform, 0.5 * dist_transform.max(), 255, cv2.THRESH_BINARY)
 
     return fg
 
@@ -102,7 +99,7 @@ def cell_count_watershed(gray, original):
     # cell_index: a dictionary. key is cell index, value is a list, containing cell size, cell center of mass
     cell_index, average_cell_size, cell_size_max = cell_size(labeled_img, slices)
     print ("average component size: " + str(average_cell_size))
-    size_threshold = 250
+    size_threshold = 30
     # filter small components.
     cell_index = filter_small_blobs(cell_index, size_threshold)
     # obtain center of mass
@@ -113,8 +110,8 @@ def cell_count_watershed(gray, original):
     scipy.misc.imsave("reconstruct.tif", reconstruct)
 
 def main():
-    original = cv2.imread("water_coins_bi.tif", cv2.IMREAD_COLOR)
-    gray = cv2.imread("water_coins_bi.tif", cv2.IMREAD_GRAYSCALE)
+    original = cv2.imread("rabies_ring_4_4.5_bi.tif", cv2.IMREAD_COLOR)
+    gray = cv2.imread("rabies_ring_4_4.5_bi.tif", cv2.IMREAD_GRAYSCALE)
     cell_count_watershed(gray, original)
 
 if __name__ == "__main__":
