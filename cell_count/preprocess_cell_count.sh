@@ -11,19 +11,24 @@ DIR='/ifs/loni/faculty/dong/mcp/muye/projects/cell_count/images/'
 for img in $DIR*;
 do
     imgname=${img%%.*}
-    # change format from jpg to tif
-	$CONVERT $img $imgname'.tif'
-	# substitute white from exports to black. 
-	$CONVERT -fill black -opaque white $imgname'.tif' $imgname'.tif' 
-	# substitute yellow from exports to black
-	$CONVERT -fill black -fuzz 50% -opaque "rgb (255, 255, 50)" $imgname'.tif' $imgname'.tif' 
-	# mask out highlighted edges
-	$CONVERT -fill white -fuzz 5% +opaque black $imgname'.tif' $imgname'_mask.tif'    # generate mask
-	# erode mask. transparent white. composite with scan image.
-	# convert to gray scale and normalize
-	$CONVERT -colorspace gray -normalize $imgname'.tif' $imgname'.tif' 
+	
+	# remove magnification and scale output from scope
+	$CONVERT -fill black -opaque white -fuzz 50% -opaque "rgb (255, 255, 50)" -compress None $img $imgname'.tif' 
+	# level adjustment, transform to gray scale
+	$CONVERT -level 60%,100% -colorspace gray $imgname'.tif' $imgname'_level.tif' 
+	# obtain representation of cell bodies.
 	# apply erosion and threshold
-	$CONVERT -morphology Erode Ring:4,4.5 $imgname'.tif' $imgname'_erode.tif'
-	$CONVERT -threshold 50% -compress None $imgname'_erode.tif' $imgname'_erode_th.tif' 
+	$CONVERT -morphology Erode Ring:4,4.5 -threshold 10% $imgname'_level.tif' $imgname'_erode.tif'
 	# split left and right halves.
+	
+	# mask out highlighted edges
+	y=$($IDENTIFY -format "%h" $imgname'.tif')  # image height
+	halfy=$(($y/2))
+	# floodfill areas surrounding sections with rgb(0,0,255)
+	$CONVERT -fill "rgb(0,0,255)" -floodfill +10+$halfy black $imgname'.tif' $imgname'_mask.tif'    
+	# fill areas within section with white
+	$CONVERT -fill white +opaque "rgb(0,0,255)" -compress None -colorspace gray $imgname'_mask.tif' $imgname'_mask.tif'   
+	# erode mask. transparent white (note to maintain 8 bit depth). composite with scan image.
+	
+	
 done
