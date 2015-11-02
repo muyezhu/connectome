@@ -1,3 +1,4 @@
+import sys
 import cv2
 import numpy as np
 import scipy.ndimage as spimg
@@ -69,9 +70,9 @@ def watershed(gray_img, color_img):
     fg_img = fg_extract(gray_img)
     bg_img = gray_img
     unknown = np.subtract(bg_img, fg_img)
-    scipy.misc.imsave("fg.tif", fg_img)
-    scipy.misc.imsave("bg.tif", bg_img)
-    scipy.misc.imsave("unknown.tif", unknown)
+    scipy.misc.imsave("fg_" + sys.argv[1], fg_img)
+    scipy.misc.imsave("bg_" + sys.argv[1], bg_img)
+    scipy.misc.imsave("unknown_" + sys.argv[1], unknown)
     # label fg. label bg as 1, unknown as 0.
     markers, placeholder = spimg.label(fg_img)
     markers += 1
@@ -93,13 +94,13 @@ def draw_cell(img, cell_index):
 
 def cell_count_watershed(gray, original):
     gray = watershed(gray, original)
-    scipy.misc.imsave("watershed_intermediate.tif", gray)
+    scipy.misc.imsave("watershed_" + sys.argv[1], gray)
     # slices: list of tuples. Each tuple contains [xlow, xhigh) and [ylow, yhigh)
     labeled_img, slices = label_components(gray)
     # cell_index: a dictionary. key is cell index, value is a list, containing cell size, cell center of mass
     cell_index, average_cell_size, cell_size_max = cell_size(labeled_img, slices)
     print ("average component size: " + str(average_cell_size))
-    size_threshold = 30
+    size_threshold = 50
     # filter small components.
     cell_index = filter_small_blobs(cell_index, size_threshold)
     # obtain center of mass
@@ -107,11 +108,13 @@ def cell_count_watershed(gray, original):
     # reconstruct as solid circle
     reconstruct = draw_cell(original, cell_index)
     print("Cell counts in image: " + str(len(cell_index)))
-    scipy.misc.imsave("reconstruct.tif", reconstruct)
+    scipy.misc.imsave("reconstruct_" + sys.argv[1], reconstruct)
 
 def main():
-    original = cv2.imread("rabies_ring_4_4.5_bi.tif", cv2.IMREAD_COLOR)
-    gray = cv2.imread("rabies_ring_4_4.5_bi.tif", cv2.IMREAD_GRAYSCALE)
+    assert len(sys.argv) > 1, "image name not provided"
+	assert len(sys.argv) < 3, "too many inputs"
+    original = cv2.imread(sys.argv[1], cv2.IMREAD_COLOR)
+    gray = cv2.imread(sys.argv[1], cv2.IMREAD_GRAYSCALE)
     cell_count_watershed(gray, original)
 
 if __name__ == "__main__":
