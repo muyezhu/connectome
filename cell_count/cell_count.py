@@ -53,22 +53,30 @@ def filter_small_blobs(cell_index, size_threshold):
 
 # extract background by dilation. dilate with ring to augment cell body shape
 def bg_extract(img):
-    struct = np.oness((5, 5), dtype=np.uint8)
-    struct[1:3, 1:3] = 0;
+    struct = np.ones((5, 5), dtype=np.uint8)
+    struct[1:3, 1:3] = 0
+    bg_img = cv2.dilate(img, struct)
     return bg_img
+
 
 # foreground extraction by distance transform thresholding
 def fg_extract(img):
     # Distance transform. Output 32-bit float image.
     dist_transform = cv2.distanceTransform(img, cv2.cv.CV_DIST_L1, maskSize=5)
-    ostuval, fg = cv2.threshold(dist_transform, 0.5 * dist_transform.max(), 255, cv2.THRESH_BINARY)
-
-    return fg
+    print("max of dist_transform is " + str(dist_transform.max()))
+    non_zero_d = dist_transform[dist_transform != 0];
+    mean_dist = np.mean(non_zero_d)
+    print("mean of non_zero_d is " + str(mean_dist))
+    ostuval, fg_img = cv2.threshold(dist_transform, mean_dist, 255, cv2.THRESH_BINARY)
+    #struct = np.ones((5, 5), dtype=np.uint8)
+    #struct[1:3, 1:3] = 0
+    #fg_img = cv2.erode(img, struct)
+    return fg_img, mean_dist
 
 def watershed(gray_img, color_img):
     # extract fg and bg, subtract to obtain unknown
-    fg_img = fg_extract(gray_img)
-    bg_img = gray_img
+    fg_img, mean_dist_transform = fg_extract(gray_img)
+    bg_img = bg_extract(gray_img)
     unknown = np.subtract(bg_img, fg_img)
     scipy.misc.imsave("fg_" + sys.argv[1], fg_img)
     scipy.misc.imsave("bg_" + sys.argv[1], bg_img)
@@ -81,7 +89,7 @@ def watershed(gray_img, color_img):
     cv2.watershed(color_img, markers)
     gray_img[markers == -1] = 0
 
-    return gray_img
+    return gray_img, mean_dist_transform
 
 def draw_cell(img, cell_index):
     reconstruct = np.ndarray(img.shape, dtype=np.uint8)
@@ -93,26 +101,26 @@ def draw_cell(img, cell_index):
     return reconstruct
 
 def cell_count_watershed(gray, original):
-    gray = watershed(gray, original)
+    gray, mean_dist_transform = watershed(gray, original)
     scipy.misc.imsave("watershed_" + sys.argv[1], gray)
     # slices: list of tuples. Each tuple contains [xlow, xhigh) and [ylow, yhigh)
     labeled_img, slices = label_components(gray)
     # cell_index: a dictionary. key is cell index, value is a list, containing cell size, cell center of mass
     cell_index, average_cell_size, cell_size_max = cell_size(labeled_img, slices)
     print ("average component size: " + str(average_cell_size))
-    size_threshold = 50
+    size_threshold = 10.5 * mean_dist_transform
     # filter small components.
     cell_index = filter_small_blobs(cell_index, size_threshold)
     # obtain center of mass
     cell_index = center_of_mass(labeled_img, cell_index, slices)
     # reconstruct as solid circle
     reconstruct = draw_cell(original, cell_index)
-    print("Cell counts in image: " + str(len(cell_index)))
+    print("Cell counts in " + sys.argv[1] + ": " + str(len(cell_index)))
     scipy.misc.imsave("reconstruct_" + sys.argv[1], reconstruct)
 
 def main():
     assert len(sys.argv) > 1, "image name not provided"
-	assert len(sys.argv) < 3, "too many inputs"
+    assert len(sys.argv) < 3, "too many inputs"
     original = cv2.imread(sys.argv[1], cv2.IMREAD_COLOR)
     gray = cv2.imread(sys.argv[1], cv2.IMREAD_GRAYSCALE)
     cell_count_watershed(gray, original)
