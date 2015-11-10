@@ -96,7 +96,7 @@ def draw_cell(img, cell_index):
     reconstruct.fill(255)
     for key in cell_index.keys():
         radius = np.int(np.sqrt(cell_index[key][0] / np.pi))
-        cv2.circle(reconstruct, cell_index[key][1], radius, (255, 153, 0), thickness=-1)
+        cv2.circle(reconstruct, cell_index[key][1], radius, (255, 255, 0), thickness=-1)
 
     return reconstruct
 
@@ -108,7 +108,8 @@ def cell_count_watershed(gray, original):
     # cell_index: a dictionary. key is cell index, value is a list, containing cell size, cell center of mass
     cell_index, average_cell_size, cell_size_max = cell_size(labeled_img, slices)
     print ("average component size: " + str(average_cell_size))
-    size_threshold = 10.5 * mean_dist_transform
+    size_threshold = 3 * mean_dist_transform * mean_dist_transform
+    size_threshold = 10 * mean_dist_transform
     # filter small components.
     cell_index = filter_small_blobs(cell_index, size_threshold)
     # obtain center of mass

@@ -1,7 +1,7 @@
 #!/bin/bash
 CONVERT='/usr/local/ImageMagick-6.7.8-2_64bit/bin/convert'
 IDENTIFY='/usr/local/ImageMagick-6.7.8-2_64bit/bin/identify'
-DIR='/ifs/loni/faculty/dong/mcp/muye/projects/cell_count/test/'
+DIR='/ifs/loni/faculty/dong/mcp/muye/projects/cell_count/test/preprocess/'
 MOGRIFY='/usr/local/ImageMagick-6.7.8-2_64bit/bin/mogrify'
 
 # the script takes rgb rabies scan image for preprocessing.
