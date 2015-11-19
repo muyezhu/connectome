@@ -9,14 +9,9 @@
 using namespace std;
 using namespace cv;
 
-void print_this_rgb(const Mat& atlas, const string& name, const string& R, const string& G, const string& B)
+void print_this_rgb(const Mat& atlas, const string& name, int r, int g, int b)
 {
     Mat canvas (atlas.rows, atlas.cols, CV_8UC3, Scalar(255,255,255));
-    int r, g, b;
-    istringstream(R) >> r;
-    istringstream(G) >> g;
-    istringstream(B) >> b;
-    cout << r << g << b;
     Vec3b ref (b, g, r);
     for (int i = 0; i < atlas.rows; ++i)
         for (int j = 0; j < atlas.cols; ++j)
@@ -40,7 +35,11 @@ int main(int argc, const char** argv)
     
     Mat atlas = imread(argv[1], IMREAD_COLOR);
     string name = argv[1];
-    print_this_rgb(atlas, name, argv[2], argv[3], argv[4]);
+    int r, g, b;
+    istringstream(argv[2]) >> r;
+    istringstream(argv[3]) >> g;
+    istringstream(argv[4]) >> b;
+    print_this_rgb(atlas, name, r, g, b);
     
     
 }
