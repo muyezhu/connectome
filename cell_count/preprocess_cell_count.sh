@@ -1,15 +1,16 @@
 #!/bin/bash
 CONVERT='/usr/local/ImageMagick-6.7.8-2_64bit/bin/convert'
 IDENTIFY='/usr/local/ImageMagick-6.7.8-2_64bit/bin/identify'
-DIR='/ifs/loni/faculty/dong/mcp/muye/projects/cell_count/test/preprocess/'
+DIR='/ifs/loni/faculty/dong/mcp/muye/projects/cell_count/work/'
 MOGRIFY='/usr/local/ImageMagick-6.7.8-2_64bit/bin/mogrify'
 
+# settings for raw tif outpuf from VS120
 # the script takes rgb rabies scan image for preprocessing.
 # (1) remove scale, magnification information output by VS120
 # (2) adjust level and transform to gray scale
 # (3) perform erosion with ring struct, where axons are more strongly eroded than cell bodies
 # (4) threshold into a binary image, to be the input to cell_count.py
-for img in $DIR*"jpg";
+for img in $DIR*"tif";
 do
     imgname=${img%%.*}
 	# remove magnification and scale output from scope
@@ -20,13 +21,20 @@ do
     std=$($IDENTIFY -format %[standard-deviation] $imgname'.tif')
     std=${std%%.*}
     std=$(($std/255))
-    level=$(($(($mean+6*$std))*100/255))
+    level=$(($(($mean+2*$std))*100/255))
 	$CONVERT -level $level%,100% -colorspace gray $imgname'.tif' $imgname'.tif'
     # obtain representation of cell bodies.
     # apply erosion and threshold
 	$CONVERT -morphology Erode Ring:4,4.5 -threshold 10% $imgname'.tif' $imgname'_erode.tif'
 done
 
+# settings 1/14/2016: starting images obtained from warpedcolor folder after warping. pipeline seems to alter intensities
+for img in $DIR*"tif"; 
+do     
+    imgname=${img%%.*}; 
+	convert -colorspace gray $imgname'.tif' $imgname'.tif' 
+	$CONVERT -morphology Erode Ring:3,3.5 -threshold 10% $imgname'.tif' $imgname'_erode.tif'; 
+done
 
 
 
