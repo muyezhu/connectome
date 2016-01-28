@@ -1,0 +1,190 @@
+Adapting non-pyramidal cell
+Amacrine cell
+Amphid
+Aspiny
+Basket cell
+Bipolar cell
+Bistratified
+Bitufted cell
+C2
+C3
+Cajal-Retzius cell
+Calbindin (CB) containing cell
+Calretinin (CR) containing cell
+Chandelier cell
+Cholecystokinin (CCK) containing cell
+Cholinergic cell
+Cone cell
+Crab-like
+Deep short axon cell (dSAC)
+Dendritic-targeting
+Dm-type unknown-1
+Dm-type unknown-2
+Dm1
+Dm1-like
+Dm1/6-like
+Dm2
+Dm3-like
+Dm4
+Dm5-like
+Dm7-like
+Dm8
+Dm9
+Dopamine cell
+Dorsal root afferent fiber collateral
+Dorsal spinocerebellar tract (DSCT) cell
+Double bouquet cell
+External tufted cell (ETC)
+Fast-spiking
+GABAergic neuron
+GABAergic projection cell
+GAD65 neuron
+Ganglion cell
+Glutamatergic neuron
+Golgi cell
+Granule cell
+Granule cell layer projecting
+Horizontal
+Ia inhibitory cell
+Inner molecular layer projecting
+Inspiratory neuron
+Integrative ring
+Inverted cell
+Ivy/Neurogliaform cell
+L1
+L2
+L3
+L4
+L5
+Large aspiny cell
+Lateral horn neuron
+LaWF1
+Local circuit neuron
+Lugaro cell
+Martinotti cell
+Medium spiny cell
+Mi-type unknown-1
+Mi1
+Mi10
+Mi11-like
+Mi13
+Mi14
+Mi15
+Mi3-like
+Mi4
+Mi9
+Modulated cell
+Motoneuron
+Mt11-like
+Mt3-like
+Mt4-like
+Mt5-like
+Multipolar cell
+Neurogliaform
+Neurogliaform cell
+Neuropeptide Y (NPY) containing cell
+Nitrergic neuron
+Non-basket
+Non-cholinergic cell
+Non-fast spiking
+Non-glutamatergic neuron
+Nonpyramidal
+Not reported
+Octopaminergic neuron
+Olfactory neuron
+Olivocerebellar neuron
+Olt-like
+Oriens-lacunosum moleculare (OLM) cell
+Outer molecular layer projecting
+Parachromaffin cell
+Parvalbumin (PV) containing cell
+Perforant pathway-associated
+Periglomerular neuron (PGN)
+Perisomatic-targeting
+Pharyngeal
+Pm-type unknown-1
+Pm-type unknown-2
+Pm1
+Pm2-like
+Projection neuron
+Purkinje cell
+Pyramidal cell
+Pyramidal-like
+R7
+R8
+Relay cell
+Renshaw cell
+Reticular cell
+Reticulospinal
+Ring
+Ring/Pharynx
+Schaffer-collateral associated cell
+Semilunar granule cell
+Sensory neuron
+Serotonergic neuron
+Small axonless neuron
+Somatostatin (SOM) containing cell
+Stellate cell
+T1
+T2
+T2a
+T3
+T4
+Tangential
+Tangential cell
+Target-selective descending neuron (TSDN)
+Thalamocortical neuron
+Tm-type unknown-1
+Tm-type unknown-10
+Tm-type unknown-11
+Tm-type unknown-12
+Tm-type unknown-13
+Tm-type unknown-14
+Tm-type unknown-15
+Tm-type unknown-16
+Tm-type unknown-17
+Tm-type unknown-2
+Tm-type unknown-3
+Tm-type unknown-4
+Tm-type unknown-5
+Tm-type unknown-6
+Tm-type unknown-7
+Tm-type unknown-8
+Tm-type unknown-9
+Tm1
+Tm12/25
+Tm16
+Tm2
+Tm20
+Tm23/24
+Tm28/TmY9
+Tm3
+Tm4
+Tm5a
+Tm5b
+Tm5c-like
+Tm5Y
+Tm6/14
+Tm9
+TmY-type unknown-1
+TmY10
+TmY13
+TmY14
+TmY3
+TmY4
+TmY5-like
+TmY5a
+Total  molecular layer projecting
+Trilaminar
+Tripolar cell
+Type I
+Type II
+Type III ISI (interneuron-specific interneuron)
+Uniglomerular projection neuron
+Unknown neurotransmitter
+Ventral spinocerebellar tract cell
+Vertical cell
+von Economo neuron
+Y4
+Y6
+
