@@ -1,0 +1,6 @@
+This repo contains code developed for my connectome thesis project.
+
+To push to github repo:
+ git remote add connectome https://github.com/muyezhu/connectome.git
+ git remote set-url connectome https://muyezhu@github.com/muyezhu/connectome.git
+     password: enter when prompted
