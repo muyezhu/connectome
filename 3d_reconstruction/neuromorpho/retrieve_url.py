@@ -4,6 +4,9 @@ import os
 from collections import deque
 import urllib
 
+prefix = "http://neuromorpho.org/getdataforbycell.jsp?class="
+fail_log = open("fail_log.txt", "a")
+
 
 def retrieve_from_deq(d, fail):
     while len(d) > 0:
@@ -25,17 +28,16 @@ def retrieve_from_deq(d, fail):
             retrieve_from_deq(d, fail)
 
 
-# create /html in cwd if not already created
-if not os.path.isdir(os.getcwd() + "/html"):
-    os.mkdir(os.getcwd() + "/html")
+def main():
+    # create /html in cwd if not already created
+    if not os.path.isdir(os.path.dirname(os.path.realpath(__file__)) + "/html"):
+        os.mkdir(os.path.dirname(os.path.realpath(__file__)) + "/html")
 
-# create deque for cell_type.txt
-with open("/projects/3d_reconstruction/neuromorpho/cell_type_list.txt") as f:
-    cell_type_deque = deque(f)
+    # create deque for cell_type.txt
+    with open("/projects/3d_reconstruction/neuromorpho/cell_type_list.txt") as f:
+        cell_type_deque = deque(f)
+    # retrieve all cell_type.html files from neuromorpho.org
+    retrieve_from_deq(cell_type_deque, 0)
 
-prefix = "http://neuromorpho.org/getdataforbycell.jsp?class="
-fail_log = open("fail_log.txt", "a")
-retrieve_from_deq(cell_type_deque, 0)
-
-
-
+if __name__ == "__main__":
+    main()
