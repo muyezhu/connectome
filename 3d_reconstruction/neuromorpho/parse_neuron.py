@@ -15,6 +15,20 @@ def archived(cell_type):
         return False
 
 
+def check_completion():
+    for html in os.listdir(os.path.dirname(os.path.realpath(__file__)) + "/html"):
+        cell_type = html.replace(".html", "")
+        is_archived = False
+        with open(os.path.isfile(os.path.dirname(os.path.realpath(__file__)) + "/archive_html.txt")) as archive:
+            for line in archive:
+                if cell_type == line.rstrip():
+                    is_archived = True
+                    break
+        if not is_archived:
+            return False
+    return True
+
+
 # traverse all html files in neuromorpho/html/
 def main():
     for html in os.listdir(os.path.dirname(os.path.realpath(__file__)) + "/html"):
@@ -25,6 +39,7 @@ def main():
             continue
         with open(os.path.dirname(os.path.realpath(__file__)) + "/html/" + html, "r") as f:
             # create soup
+            no_fail = True
             soup = BeautifulSoup(f, "html.parser")
             # parse author, species, region, neuron name
             # author name contained in <font> tag with id = lvl2
@@ -45,7 +60,6 @@ def main():
                         # parse neuron names
                         # the following is a search term for cells in same author, species and region tree
                         search = region_tag.input['value'] + postfix
-                        no_fail = True
                         # retrieve information for each neuron
                         for item in soup.find_all(id=search):
                             # typical output for item:
@@ -54,14 +68,20 @@ def main():
                             neuron_tag = item.next_sibling.next_sibling
                             if not retrieve_neuron.retrieve_neuron(neuron_tag, parent_path):
                                 no_fail = False
+                        # if all items in directory are downloaded, create completion stamp file
                         if no_fail:
                             f = open(parent_path + "complete.html", "w")
                             f.close()
         # archive html files where all retrieval are completed
-        with open(os.path.dirname(os.path.realpath(__file__)) + "/archive_html.txt", "a") as f:
-            f.write(cell_type + "\n")
-        print(cell_type + " complete" + "\n")
-    print("All complete")
+        if no_fail:
+            with open(os.path.dirname(os.path.realpath(__file__)) + "/archive_html.txt", "a") as f:
+                f.write(cell_type + "\n")
+            print(cell_type + " complete" + "\n")
+    if check_completion():
+        print("all complete")
+    else:
+        main()
+
 
 if __name__ == "__main__":
     prefix = "http://neuromorpho.org/"

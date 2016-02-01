@@ -11,6 +11,9 @@ prefix = "http://neuromorpho.org/"
 # rel="./images/imageFiles/Chklovskii/280277.png" rev="280277"
 # target="_blank"> 280277</a></b>
 def retrieve_neuron(neuron, parent_path):
+    """if retrieval of info, swc, img are all successful, return true
+       otherwise return false
+    """
     neuron_status = collected(neuron, parent_path)
     if neuron_status == 3:
         return True
