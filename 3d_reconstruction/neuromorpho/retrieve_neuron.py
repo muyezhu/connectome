@@ -13,16 +13,25 @@ prefix = "http://neuromorpho.org/"
 def retrieve_neuron(neuron, parent_path):
     neuron_status = collected(neuron, parent_path)
     if neuron_status == 3:
-        return
+        return True
     neuron_url = prefix + neuron.a["href"]
     soup = make_soup(neuron_url)
-    if soup is not None:
-        if neuron_status < 1:
-            retrieve_info(soup, neuron, parent_path)
-        if neuron_status < 2:
-            retrieve_swc(soup, neuron, parent_path)
-        if neuron_status < 3:
-            retrieve_img(soup, neuron, parent_path)
+    if soup is None:
+        return False
+    if neuron_status < 1:
+        info = retrieve_info(soup, neuron, parent_path)
+        swc = retrieve_swc(soup, neuron, parent_path)
+        img = retrieve_img(soup, neuron, parent_path)
+    elif neuron_status < 2:
+        info = True
+        swc = retrieve_swc(soup, neuron, parent_path)
+        img = retrieve_img(soup, neuron, parent_path)
+    else:
+        info = True
+        swc = True
+        img = retrieve_img(soup, neuron, parent_path)
+    return info and swc and img
+
 
 
 # do not retrieve existing files
@@ -62,6 +71,7 @@ def retrieve_info(soup, neuron, parent_path):
                 info.write("N/A\n")
             else:
                 info.write(value.string.encode("utf-8").lstrip().rstrip() + "\n")
+    return True
 
 
 # Note: find("a", string=) function did not work for unknown reason
@@ -79,13 +89,15 @@ def retrieve_swc(soup, neuron, parent_path):
             with open("swc_fail_log.txt", "a") as swc_fail_log:
                 swc_fail_log.write(parent_path + "\t")
                 swc_fail_log.write(neuron.string.encode("utf-8") + "\n")
+            return False
         try:
             urllib.urlretrieve(swc_link, parent_path + neuron.string + ".swc")
+            return True
         except IOError:
             fail += 1
             retrieve_swc_(fail=fail)
 
-    retrieve_swc_()
+    return(retrieve_swc_())
 
 
 def retrieve_img(soup, neuron, parent_path):
@@ -97,10 +109,12 @@ def retrieve_img(soup, neuron, parent_path):
             with open("img_fail_log.txt", "a") as img_fail_log:
                 img_fail_log.write(parent_path + "\t")
                 img_fail_log.write(img_link + "\n")
+            return False
         try:
             urllib.urlretrieve(img_link, parent_path + neuron.string + ".png")
+            return True
         except IOError:
             fail += 1
             retrieve_img_(fail=fail)
 
-    retrieve_img_()
+    return(retrieve_img_())

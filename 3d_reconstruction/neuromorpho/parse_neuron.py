@@ -45,19 +45,23 @@ def main():
                         # parse neuron names
                         # the following is a search term for cells in same author, species and region tree
                         search = region_tag.input['value'] + postfix
+                        no_fail = True
                         # retrieve information for each neuron
                         for item in soup.find_all(id=search):
                             # typical output for item:
                             # <input id="TmY-type unknown-1ChklovskiiDrosophila melanogasterRight Optic Lobe_chkbox" name="neuron_name" onclick="fnClickCheckbox(this)"
                             # type="checkbox" value="280277"/>
                             neuron_tag = item.next_sibling.next_sibling
-                            retrieve_neuron.retrieve_neuron(neuron_tag, parent_path)
-                        f = open(parent_path + "complete.html")
-                        f.close()
+                            if not retrieve_neuron.retrieve_neuron(neuron_tag, parent_path):
+                                no_fail = False
+                        if no_fail:
+                            f = open(parent_path + "complete.html", "w")
+                            f.close()
         # archive html files where all retrieval are completed
         with open(os.path.dirname(os.path.realpath(__file__)) + "/archive_html.txt", "a") as f:
             f.write(cell_type + "\n")
         print(cell_type + " complete" + "\n")
+    print("All complete")
 
 if __name__ == "__main__":
     prefix = "http://neuromorpho.org/"
