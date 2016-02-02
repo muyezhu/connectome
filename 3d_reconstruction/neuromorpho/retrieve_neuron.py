@@ -70,10 +70,11 @@ def retrieve_info(soup, neuron, parent_path):
                 continue
             info.write(key.string.encode("utf-8") + "  ")
             value = key.find_next("td")
-            if value.string is None:
+            # Note: value.string causes fields with superscript to return None
+            if value.contents[0] is None:
                 info.write("N/A\n")
             else:
-                info.write(value.string.encode("utf-8").lstrip().rstrip() + "\n")
+                info.write(value.contents[0].encode("utf-8").lstrip().rstrip() + "\n")
     return True
 
 
